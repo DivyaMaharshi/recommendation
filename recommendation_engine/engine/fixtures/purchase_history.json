@@ -12,7 +12,7 @@
 	},
 	{
 		"model": "engine.PurchaseHistory",
-		"pk": 1, 
+		"pk": 2, 
 		"fields": {
 			"book" : 9,
 			"quantity":1,
@@ -23,7 +23,7 @@
    
     {
 		"model": "engine.PurchaseHistory",
-		"pk": 1, 
+		"pk": 3, 
 		"fields": {
 			"book" : 4,
 			"quantity":1,
@@ -33,7 +33,7 @@
 	},
 	{
 		"model": "engine.PurchaseHistory",
-		"pk": 1, 
+		"pk": 4, 
 		"fields": {
 			"book" : 6,
 			"quantity":2,
@@ -43,7 +43,7 @@
 	},
 	{
 		"model": "engine.PurchaseHistory",
-		"pk": 1, 
+		"pk": 5, 
 		"fields": {
 			"book" : 7,
 			"quantity":1,
