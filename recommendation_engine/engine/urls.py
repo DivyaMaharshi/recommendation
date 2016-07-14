@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
 		url(r'^set_user/$', views.set_user, name='set_user'),
     url(r'^$', views.index, name='index'),
+    url(r'^bought/$', views.bought, name='bought'),
     url(r'^(?P<book_id>[0-9]+)/$', views.show, name='show'),
     url(r'^affinity_score/$', views.books_affinity_score, name='books_affinity_score'),
     url(r'^alpha_purchase_score/$', views.alpha_product_bought_score, name='alpha_product_bought_score'),

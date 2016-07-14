@@ -39,6 +39,29 @@ def index(request, user_id):
 	recommended_books, top_5_books = fn_calculation_for_each_book(request, user_id)
 	return render(request, 'engine/index.html', {'books': books, 'recommended_books': top_5_books, 'user': user})
 
+def bought(request, user_id):
+	user_id = int(user_id)
+	user = Users.objects.get(pk=user_id)
+
+	books = Books.objects.all()
+	paginator = Paginator(books, 5)
+
+	page = request.GET.get('page')
+	try:
+		books = paginator.page(page)
+	except PageNotAnInteger:
+		# If page is not an integer, deliver first page.
+ 		books = paginator.page(1)
+	except EmptyPage:
+		# If page is out of range (e.g. 9999), deliver last page of results.
+		books = paginator.page(paginator.num_pages)
+
+	books = []
+	for bought_book in UserBoughtHistory.objects.filter(user_id=user_id):
+		books.append(Books.objects.get(pk=bought_book.book_id))
+	recommended_books, top_5_books = fn_calculation_for_each_book(request, user_id)
+	return render(request, 'engine/bought.html',{'books':books, 'recommended_books': top_5_books, 'user':user})
+
 def show(request, user_id, book_id):
 	user_id = int(user_id)
 	user = Users.objects.get(pk=user_id)
@@ -50,9 +73,9 @@ def show(request, user_id, book_id):
 	x.clicks = x.clicks + 1
 	x.save()
 
+
 	book = Books.objects.get(pk=book_id)
 	recommended_books, top_5_books = fn_calculation_for_each_book(request, user_id)
-	pdb.show_trace()
 	return render(request, 'engine/show.html',{'book': book, 'recommended_books': top_5_books, 'user': user})
 
 def buy_now(request, user_id, book_id):
