@@ -1,0 +1,9 @@
+<form method="post" action="/books/set_user/">
+{% csrf_token %}
+	<select name="user_id">
+	 {% for user in users %}
+	 	 <option value={{ user.id }}>{{ user.name }}</option>
+	 {% endfor %}
+	</select>
+	<input type="submit" value="Submit"/>
+</form>

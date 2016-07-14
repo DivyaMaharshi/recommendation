@@ -1,7 +1,28 @@
+{% include "engine/show_user.html" %}
+
 <div style="margin-top:100px;margin-left:200px;">
 {% for book in books %}
-	<div style="clear:both;width:300px;height:100px;background-color:#83cbf5;margin-top:50px;">
+	<div style="float:left;width:300px;height:100px;background-color:#83cbf5;margin-top:50px;margin-left:40px;">
 		<a href="/books/{{ book.id}}">{{ book.name }}</a>
 	</div>
 {% endfor %}
 </div>
+
+<div class="pagination" style="margin-top:100px;clear:both;margin-left:240px;">
+    <span class="step-links">
+        {% if books.has_previous %}
+            <a href="?page={{ books.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ books.number }} of {{ books.paginator.num_pages }}.
+        </span>
+
+        {% if books.has_next %}
+            <a href="?page={{ books.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+
+
+{% include "engine/suggestions.html" %}

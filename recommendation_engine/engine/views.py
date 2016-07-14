@@ -1,19 +1,54 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from engine.header import *
 from django.db import connection
 import math
 from .models import Users, Books, UserClickHistory, PurchaseHistory, UserBoughtHistory
 from decimal import Decimal
+import pdb
 
 # Create your views here.
 
+def set_user(request):
+	user_id = request.POST.get("user_id")
+	if user_id != None:
+		response = redirect('index')
+		response.set_cookie('user_id', user_id)
+		return response
+	else:
+		users = Users.objects.all()
+		return render(request, 'engine/select_user.html', {'users': users})
+
 def index(request):
+	user_id = request.COOKIES.get("user_id")
+	if user_id == None:
+		return redirect('/books/set_user')
+	else:
+		user_id = int(user_id)
+		user = Users.objects.get(pk=user_id)
+
 	books = Books.objects.all()
-	return render(request, 'engine/index.html', {'books': books})
+	paginator = Paginator(books, 5)
+
+	page = request.GET.get('page')
+	try:
+		books = paginator.page(page)
+	except PageNotAnInteger:
+		# If page is not an integer, deliver first page.
+ 		books = paginator.page(1)
+	except EmptyPage:
+		# If page is out of range (e.g. 9999), deliver last page of results.
+		books = paginator.page(paginator.num_pages)
+	return render(request, 'engine/index.html', {'books': books, 'recommended_books': books, 'user': user})
 
 def show(request, book_id):
-	user_id = 1
+	user_id = request.COOKIES.get("user_id")
+	if user_id == None:
+		return redirect('/books/set_user')
+	else:
+		user_id = int(user_id)
+		user = Users.objects.get(pk=user_id)
 	# Update user_click_history
 	try:
 		x = UserClickHistory.objects.get(user_id=user_id,book_id=book_id)
@@ -23,10 +58,15 @@ def show(request, book_id):
 	x.save()
 
 	book = Books.objects.get(pk=book_id)
-	return render(request, 'engine/show.html',{'book': book})
+	return render(request, 'engine/show.html',{'book': book, 'recommended_books': [book], 'user': user})
 
 def buy_now(request, book_id):
-	user_id = 1
+	user_id = request.COOKIES.get("user_id")
+	if user_id == None:
+		return redirect('/books/set_user')
+	else:
+		user_id = int(user_id)
+		user = Users.objects.get(pk=user_id)
 	# update purchase_history
 	try:
 		x = PurchaseHistory.objects.get(book_id=book_id)
@@ -42,10 +82,16 @@ def buy_now(request, book_id):
 		ub = UserBoughtHistory.objects.create(book_id=book_id, user_id=user_id, is_bought=True)
 
 	book = Books.objects.get(pk=book_id)
-	return render(request, 'engine/rating.html', {'book': book, 'loop_times': range(1,6)})
+	return render(request, 'engine/rating.html', {'book': book, 'loop_times': range(1,6), 'user': user})
 
 def product_rating(request, book_id):
-	user_id = 1
+	user_id = request.COOKIES.get("user_id")
+	if user_id == None:
+		return redirect('/books/set_user')
+	else:
+		user_id = int(user_id)
+		user = Users.objects.get(pk=user_id)
+
 	rating = Decimal(request.POST["user_rating"])
 	#update purchase_history
 	x = PurchaseHistory.objects.get(book_id=book_id)
