@@ -3,6 +3,7 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
+		url(r'^set_user/$', views.set_user, name='set_user'),
     url(r'^$', views.index, name='index'),
     url(r'^(?P<book_id>[0-9]+)/$', views.show, name='show'),
     url(r'^affinity_score/$', views.books_affinity_score, name='books_affinity_score'),
