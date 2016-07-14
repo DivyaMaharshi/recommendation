@@ -307,7 +307,7 @@ def fn_calculation_for_each_book(request):
             
             total = alpha + gamma + beta + average_phi
             fn_score.update({str(book_id) :total})
-<<<<<<< HEAD
+
             
     
     final_fn_score_withbooks_names = select_top5_books(fn_score)
