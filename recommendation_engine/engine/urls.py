@@ -11,4 +11,6 @@ urlpatterns = [
     url(r'^product_click_score/$', views.product_click_score, name='product_click_score'),
     url(r'^(?P<book_id>[0-9]+)/buy$', views.buy_now, name='buy_now'),
     url(r'^(?P<book_id>[0-9]+)/rating$', views.product_rating, name='product_rating'),
+    url(r'^fn_calculation_for_each_book/$', views.fn_calculation_for_each_book, name='fn_calculation_for_each_book'),
+   
 ]
