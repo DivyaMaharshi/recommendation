@@ -1,0 +1,56 @@
+[   
+    
+    {
+		"model": "engine.PurchaseHistory",
+		"pk": 1, 
+		"fields": {
+			"book" : 2,
+			"quantity":2,
+			"rating":4.5,
+			"rating_count":1
+		}
+	},
+	{
+		"model": "engine.PurchaseHistory",
+		"pk": 1, 
+		"fields": {
+			"book" : 9,
+			"quantity":1,
+			"rating":5,
+			"rating_count":1
+		}
+	},
+   
+    {
+		"model": "engine.PurchaseHistory",
+		"pk": 1, 
+		"fields": {
+			"book" : 4,
+			"quantity":1,
+			"rating":3,
+			"rating_count":1 
+		}
+	},
+	{
+		"model": "engine.PurchaseHistory",
+		"pk": 1, 
+		"fields": {
+			"book" : 6,
+			"quantity":2,
+			"rating":4.5,
+			"rating_count":1 
+		}
+	},
+	{
+		"model": "engine.PurchaseHistory",
+		"pk": 1, 
+		"fields": {
+			"book" : 7,
+			"quantity":1,
+			"rating":1,
+			"rating_count":1 
+		}
+	}
+	
+
+]
