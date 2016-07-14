@@ -1,0 +1,60 @@
+[   
+    
+    {
+		"model": "engine.UserClickHistory",
+		"pk": 1, 
+		"fields": {
+			"user" : 1,
+			"book" : 2,
+			"clicks" :2 
+		}
+	},
+	{
+		"model": "engine.UserClickHistory",
+		"pk": 2, 
+		"fields": {
+			"user" : 1,
+			"book" : 1,
+			"clicks" :2 
+		}
+	},
+   
+    {
+		"model": "engine.UserClickHistory",
+		"pk": 3, 
+		"fields": {
+			"user" : 3,
+			"book" : 2,
+			"clicks" :2 
+		}
+	},
+	{
+		"model": "engine.UserClickHistory",
+		"pk": 4, 
+		"fields": {
+			"user" : 3,
+			"book" : 3,
+			"clicks" :5 
+		}
+	},
+	{
+		"model": "engine.UserClickHistory",
+		"pk": 5, 
+		"fields": {
+			"user" : 4,
+			"book" : 9,
+			"clicks" :2 
+		}
+	},
+	{
+		"model": "engine.UserClickHistory",
+		"pk": 6, 
+		"fields": {
+			"user" : 4,
+			"book" : 8,
+			"clicks" :5
+		}
+	}
+	
+
+]
