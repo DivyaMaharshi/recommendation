@@ -307,4 +307,52 @@ def fn_calculation_for_each_book(request):
             
             total = alpha + gamma + beta + average_phi
             fn_score.update({str(book_id) :total})
+
+            
+    
+    final_fn_score_withbooks_names = select_top5_books(fn_score)
+    return fn_score,final_fn_score_withbooks_names
+
+
+def  select_top5_books(fn_score):
+    
+
+    final_books_dict={}
+    import operator 
+    sorted_x = sorted(fn_score.items(), key=operator.itemgetter(1),reverse=True)
+    sorted_x = sorted_x[:6]
+    for i in sorted_x:
+        temp={}
+        book_name = Books.objects.filter(id=i[0]).values('name')
+        book_name = book_name[0]['name']
+        temp[str(book_name)] = i[1]
+        final_books_dict.update(temp)
+    
+    return final_books_dict
+
+
+
+
+
+    
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+    
+
+    
+=======
     return fn_score
+>>>>>>> 187da52d2dae68d9d3d83ff13d34045ce1edfb35
