@@ -17,6 +17,6 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
-		url(r'^books/', include('engine.urls')),
+		url(r'^users/(?P<user_id>[0-9]+)/books/', include('engine.urls')),
         url(r'^admin/', admin.site.urls),
 ]

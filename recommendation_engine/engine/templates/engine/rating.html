@@ -1,7 +1,7 @@
 {% include "engine/show_user.html" %}
 
 <div>
-	<form method="post" action="/books/{{book.id}}/rating">
+	<form method="post" action="/users/{{user.id}}/books/{{book.id}}/rating">
 	{% csrf_token %}
 		<select name="user_rating">
 		 {% for i in loop_times %}

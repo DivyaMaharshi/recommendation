@@ -20,13 +20,9 @@ def set_user(request):
 		users = Users.objects.all()
 		return render(request, 'engine/select_user.html', {'users': users})
 
-def index(request):
-	user_id = request.COOKIES.get("user_id")
-	if user_id == None:
-		return redirect('/books/set_user')
-	else:
-		user_id = int(user_id)
-		user = Users.objects.get(pk=user_id)
+def index(request, user_id):
+	user_id = int(user_id)
+	user = Users.objects.get(pk=user_id)
 
 	books = Books.objects.all()
 	paginator = Paginator(books, 5)
@@ -42,13 +38,9 @@ def index(request):
 		books = paginator.page(paginator.num_pages)
 	return render(request, 'engine/index.html', {'books': books, 'recommended_books': books, 'user': user})
 
-def show(request, book_id):
-	user_id = request.COOKIES.get("user_id")
-	if user_id == None:
-		return redirect('/books/set_user')
-	else:
-		user_id = int(user_id)
-		user = Users.objects.get(pk=user_id)
+def show(request, user_id, book_id):
+	user_id = int(user_id)
+	user = Users.objects.get(pk=user_id)
 	# Update user_click_history
 	try:
 		x = UserClickHistory.objects.get(user_id=user_id,book_id=book_id)
@@ -60,13 +52,9 @@ def show(request, book_id):
 	book = Books.objects.get(pk=book_id)
 	return render(request, 'engine/show.html',{'book': book, 'recommended_books': [book], 'user': user})
 
-def buy_now(request, book_id):
-	user_id = request.COOKIES.get("user_id")
-	if user_id == None:
-		return redirect('/books/set_user')
-	else:
-		user_id = int(user_id)
-		user = Users.objects.get(pk=user_id)
+def buy_now(request, user_id, book_id):
+	user_id = int(user_id)
+	user = Users.objects.get(pk=user_id)
 	# update purchase_history
 	try:
 		x = PurchaseHistory.objects.get(book_id=book_id)
@@ -84,13 +72,9 @@ def buy_now(request, book_id):
 	book = Books.objects.get(pk=book_id)
 	return render(request, 'engine/rating.html', {'book': book, 'loop_times': range(1,6), 'user': user})
 
-def product_rating(request, book_id):
-	user_id = request.COOKIES.get("user_id")
-	if user_id == None:
-		return redirect('/books/set_user')
-	else:
-		user_id = int(user_id)
-		user = Users.objects.get(pk=user_id)
+def product_rating(request, user_id, book_id):
+	user_id = int(user_id)
+	user = Users.objects.get(pk=user_id)
 
 	rating = Decimal(request.POST["user_rating"])
 	#update purchase_history
