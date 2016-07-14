@@ -1,0 +1,11 @@
+<div>
+<form method="post" action="/books/{{book.id}}/rating">
+{% csrf_token %}
+	<select name="user_rating">
+	 {% for i in loop_times %}
+	 	 <option value={{ i }}>{{ i }}</option>
+	 {% endfor %}
+	</select>
+	<input type="submit" value="Submit"/>
+</form>
+</div>
