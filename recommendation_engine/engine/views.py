@@ -36,7 +36,8 @@ def index(request, user_id):
 	except EmptyPage:
 		# If page is out of range (e.g. 9999), deliver last page of results.
 		books = paginator.page(paginator.num_pages)
-	return render(request, 'engine/index.html', {'books': books, 'recommended_books': books, 'user': user})
+	recommended_books, top_5_books = fn_calculation_for_each_book(request, user_id)
+	return render(request, 'engine/index.html', {'books': books, 'recommended_books': top_5_books, 'user': user})
 
 def show(request, user_id, book_id):
 	user_id = int(user_id)
@@ -50,7 +51,9 @@ def show(request, user_id, book_id):
 	x.save()
 
 	book = Books.objects.get(pk=book_id)
-	return render(request, 'engine/show.html',{'book': book, 'recommended_books': [book], 'user': user})
+	recommended_books, top_5_books = fn_calculation_for_each_book(request, user_id)
+	pdb.show_trace()
+	return render(request, 'engine/show.html',{'book': book, 'recommended_books': top_5_books, 'user': user})
 
 def buy_now(request, user_id, book_id):
 	user_id = int(user_id)
@@ -235,8 +238,7 @@ def product_click_score(request):
     return product_clicks_dict
 
 
-def fn_calculation_for_each_book(request):
-    user_id = 3
+def fn_calculation_for_each_book(request, user_id):
     #function call
     fn_score={}
     affinity_dict = books_affinity_score(request)
@@ -329,30 +331,3 @@ def  select_top5_books(fn_score):
         final_books_dict.update(temp)
     
     return final_books_dict
-
-
-
-
-
-    
-
-
-
-
-
-   
-
-
-
-
-
-
-
-
-
-    
-
-    
-=======
-    return fn_score
->>>>>>> 187da52d2dae68d9d3d83ff13d34045ce1edfb35
