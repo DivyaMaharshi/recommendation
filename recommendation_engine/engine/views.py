@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from engine.header import *
+from django.db import connection
+import math
 from .models import Users, Books, UserClickHistory, PurchaseHistory, UserBoughtHistory
 from decimal import Decimal
 
@@ -53,4 +56,141 @@ def product_rating(request, book_id):
 	return HttpResponse("You rated this book " + str(rating) + " star")
 
 
+def sql_dictfetchall(sql_query):
+        cursor = connection.cursor()
+        cursor.execute(sql_query)
+        "Return all rows from a cursor as a dict"
+        columns = [col[0] for col in cursor.description]
+        return [
+            dict(zip(columns, row))
+            for row in cursor.fetchall()
+        ]
+
+
+def intersect(a, b):
+    return list(set(a) & set(b))
 	
+
+def books_affinity_score(request):
+    # books count
+    affinity_dict = {}
+    books_count=Books.objects.all()
+    for booka in range(len(books_count)):
+        affinity_dict[str(booka)] = {}
+        for bookb in  range(booka+1, len(books_count)):
+            user_list = Users.objects.values("id")
+            booka_count_list =  [i['id'] for i in user_list]
+            booka_count = UserBoughtHistory.objects.filter(book__id = booka).values("user_id")
+            bookb_count = UserBoughtHistory.objects.filter(book__id = bookb).values("user_id")  
+            booka_count_list =  [i['user_id'] for i in booka_count]
+            bookb_count_list =  [i['user_id'] for i in bookb_count]
+            
+            yayb = len(intersect(booka_count_list, bookb_count_list))
+            yanb = len([item for item in booka_count if item not in bookb_count])
+            nayb = len([item for item in bookb_count if item not in booka_count])
+            nanb = len([item for item in user_list if (item not in booka_count and item not in bookb_count)])
+            
+            temp1 = yayb*nanb - yanb*nayb
+            temp2 = (yayb+yanb) * (nayb+nanb) * (yayb+nayb) * (yanb+nanb) 
+            temp3 = math.sqrt(temp2) 
+            temp4 = 0
+            if temp3 !=0 :
+                temp4 = temp1/temp3
+         
+            temp={}
+            temp[str(bookb)] = temp4
+            affinity_dict[str(booka)].update(temp)
+            
+    return affinity_dict
+
+
+def alpha_product_bought_score(request):
+
+    books_purchased_dict=[]
+    # to consider all books
+    books_list = Books.objects.values("id")
+    books_list =  [i['id'] for i in books_list]
+     
+    #total purchased amount
+    company_total_purchased_quantity = PurchaseHistory.objects.aggregate(total=Sum("quantity"))
+    company_total_purchased_quantity = company_total_purchased_quantity['total']
+
+    # each book purchased quantity
+    total_purchase_bookwise = PurchaseHistory.objects.values("book").annotate(total_purchased=Sum("quantity")).order_by('book')
+    books_keys_list = [i['book'] for i in total_purchase_bookwise ]
+    total_purchase_bookwise  = list(total_purchase_bookwise)
+
+    for book_id in books_list:
+        if book_id not in books_keys_list :
+            temp={}
+            temp['book'] = book_id
+            temp['total_purchased'] = 0 
+            temp['total_normalised'] = 0
+            total_purchase_bookwise.append(temp)
+
+    
+    for purchase_dict in  total_purchase_bookwise :
+        if 'total_normalised' not in purchase_dict.keys():
+            if company_total_purchased_quantity > 0 :
+                purchase_dict['total_normalised'] = round(purchase_dict['total_purchased']/company_total_purchased_quantity,2)
+                books_purchased_dict.append(purchase_dict)
+        else: 
+            books_purchased_dict.append(purchase_dict)
+    import pdb;pdb.set_trace()     
+    return books_purchased_dict
+
+
+def gamma_product_rating_score(request):
+    
+    books_ratings_dict = []
+    # to consider all books
+    books_list = Books.objects.values("id")
+    books_list =  [i['id'] for i in books_list]
+    
+    # each book purchased quantity
+    books_ratings = PurchaseHistory.objects.values("book",'rating').order_by('book')
+    books_keys_list = [i['book'] for i in books_ratings ]
+    books_ratings  = list(books_ratings)
+
+    for book_id in books_list:
+        if book_id not in books_keys_list :
+            temp={}
+            temp['book'] = book_id
+            temp['rating'] = 0 
+            temp['normalised_rating'] = 0
+            books_ratings.append(temp)
+    
+    for ratings_dict in  books_ratings :
+        if 'normalised_rating' not in ratings_dict.keys():
+                ratings_dict['normalised_rating'] = round(ratings_dict['rating']/5,2)
+                books_ratings_dict.append(ratings_dict)
+        else: 
+            books_ratings_dict.append(ratings_dict)
+
+    return books_ratings_dict
+
+
+def product_click_score(request):
+
+    sql_query = "select u1.user_id,u1.book_id,u1.clicks,is_bought from  user_click_history u1 left outer join user_bought_history u2 on u1.user_id = u2.user_id and u1.book_id = u2.book_id and is_bought != 't' "
+    clicked_butnotbought = sql_dictfetchall(sql_query)
+
+
+    sql_query = " select book_id,sum(clicks) from user_click_history group by book_id order by book_id "
+    productwise_totalclicks = sql_dictfetchall(sql_query)
+    productwise_totalclicks  = {str(i['book_id']):i['sum'] for i in productwise_totalclicks}
+
+    for clicked_dict in clicked_butnotbought:
+    	clicked_dict['normalised_clicks'] = round(clicked_dict['clicks']/productwise_totalclicks[str(clicked_dict['book_id'])],3)
+
+    return clicked_butnotbought
+
+
+
+
+
+
+
+    
+
+    
