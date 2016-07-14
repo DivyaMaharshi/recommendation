@@ -1,0 +1,38 @@
+[
+	{
+		"model": "engine.books",
+		"pk": 1, 
+		"fields": {
+			"name": "Machine Learning by Davis"
+		}
+	},
+	{
+		"model": "engine.books",
+		"pk": 2,
+		"fields": {
+			"name": "Date Analytics by Hungary"
+		}
+	},
+	{
+		"model": "engine.books",
+		"pk": 3,
+		"fields": {
+			"name": "Intro to Machine Learning by Kelly"
+		}
+	},
+	{
+		"model": "engine.books",
+		"pk": 4,
+		"fields": {
+			"name": "Linear Algebra"
+		}
+	},
+	{
+		"model": "engine.books",
+		"pk": 5,
+		"fields": {
+			"name": "Calculus and Statistics"
+		}
+	}
+
+]
