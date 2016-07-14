@@ -308,24 +308,3 @@ def fn_calculation_for_each_book(request):
             total = alpha + gamma + beta + average_phi
             fn_score.update({str(book_id) :total})
     return fn_score
-
-
-    
-
-
-
-
-
-   
-
-
-
-
-
-
-
-
-
-    
-
-    
