@@ -293,7 +293,7 @@ def fn_calculation_for_each_book(request, user_id):
             else:
                 beta = 0
 
-            total = round((alpha + gamma + beta),4)
+            total = round(((.20*alpha) + (.20*gamma) + (.60*beta)),4)
             fn_score.update({str(book_id) :total})
 
         else :
@@ -335,7 +335,7 @@ def fn_calculation_for_each_book(request, user_id):
             else:
                 average_phi = 0
             
-            total = round((alpha + gamma + beta + average_phi), 4)
+            total = round(((.20*alpha) + (.20*gamma) + (.40*beta) + (.20*average_phi)), 4)
             fn_score.update({str(book_id) :total})
 
             
