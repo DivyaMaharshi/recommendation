@@ -2,14 +2,14 @@
 
 {% include "engine/sidebar.html" %}
 
-<div style="margin-top:10px;margin-left:70px;float:left;height:100px;width:400px;">
+<div style="margin-top:20px;margin-left:70px;float:left;height:100px;width:400px;">
 	<div style="clear:both;">
 		<h1>{{book.name}}</h1>
 		<a href="/users/{{user.id}}/books/{{book.id}}/buy">Buy Now</a>
 	</div>
 	
 </div>
-<div style="margin-top:500px;clear:both;margin-left:230px;">
+<div style="margin-top:-500px;margin-left:230px;">
 	{% include "engine/suggestions.html" %}
 </div>
 

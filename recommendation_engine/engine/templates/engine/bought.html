@@ -1,2 +1,27 @@
-{% include "engine/index.html" %}
+<body>
+{% include "engine/show_user.html" %}
+
+{% include "engine/sidebar.html" %}
+
+<div style="margin-top:10px;margin-left:200px;">
+<div style="margin-left:40px;">
+    <h1>
+      <marquee behavior="slide" direction="left">Purchase History</marquee>
+    </h1>  
+</div>
+
+{% for book in books %}
+    <div style="float:left;width:300px;height:100px;background-color:rgba(33, 150, 243, 0.21);margin-top:50px;margin-left:40px;">
+        <center>
+          <p style="padding-top:5px;">
+            <h3><a href="/users/{{user.id}}/books/{{ book.id}}" style="color:black;text-decoration: none">{{ book.name }}</a></h3>
+          </p>
+        </center>
+    </div>
+{% endfor %}
+    {% include "engine/suggestions.html" %}
+</div>
+
+</body>
+
 

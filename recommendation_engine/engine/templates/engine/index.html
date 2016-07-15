@@ -1,14 +1,24 @@
+<body>
 {% include "engine/show_user.html" %}
 
 {% include "engine/sidebar.html" %}
 
 <div style="margin-top:10px;margin-left:200px;">
+<div style="margin-left:40px;">
+    <h1>
+      <marquee behavior="slide" direction="left">Books in Store</marquee>
+    </h1>  
+</div>
 {% for book in books %}
-	<div style="float:left;width:300px;height:100px;background-color:#83cbf5;margin-top:50px;margin-left:40px;">
-		<a href="/users/{{user.id}}/books/{{ book.id}}">{{ book.name }}</a>
+	<div style="float:left;width:300px;height:100px;background-color:rgba(33, 150, 243, 0.21);margin-top:50px;margin-left:40px;">
+		<center>
+      <p style="padding-top:5px;">
+        <h3><a href="/users/{{user.id}}/books/{{ book.id}}" style="color:black;text-decoration: none">{{ book.name }}</a></h3>
+      </p>
+    </center>
 	</div>
 {% endfor %}
-	<div class="pagination" style="padding-top:50px;clear:both;margin-left:140px;">
+	<div class="pagination" style="clear:both;margin-left:40px;">
 	    <span class="step-links">
 	        {% if books.has_previous %}
 	            <a href="?page={{ books.previous_page_number }}">previous</a>
@@ -26,5 +36,7 @@
 
 	{% include "engine/suggestions.html" %}
 </div>
+
+</body>
 
 

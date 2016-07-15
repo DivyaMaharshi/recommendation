@@ -1,8 +1,17 @@
-<div style="margin-left:140px;margin-top:100px;clear:both;">
-	<h1>Recommendations</h1>
-	{% for key,value in recommended_books.items %}
-		<div style="float:left;width:300px;height:100px;background-color:#83cbf5;margin-top:50px;margin-left:30px;">
-			<a href="/users/{{user.id}}/books/{{ key}}">{{ key }}: {{value}}</a>
-		</div>
-	{% endfor %}
+<div style="margin-left:40px;margin-top:100px;clear:both;">
+	<h1>
+		<marquee behavior="slide" direction="left">Suggested Books</marquee>
+	</h1>
+	<div style="margin-left:-30px;">
+		{% for book in recommended_books %}
+			<div style="float:left;width:300px;height:100px;background-color:rgba(33, 150, 243, 0.21);margin-top:50px;margin-left:30px;">
+				<center>
+		      <p style="padding-top:0px;">
+		        <h3><a href="/users/{{user.id}}/books/{{ book.book_id}}" style="color:black;text-decoration: none">{{book.book_name}}</a></h3>
+		      </p>
+		      <p>({{book.score}})</p>
+		    </center>
+			</div>
+		{% endfor %}
+	</div>
 </div>

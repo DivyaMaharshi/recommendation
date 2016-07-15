@@ -37,6 +37,7 @@ def index(request, user_id):
 		# If page is out of range (e.g. 9999), deliver last page of results.
 		books = paginator.page(paginator.num_pages)
 	recommended_books, top_5_books = fn_calculation_for_each_book(request, user_id)
+	
 	return render(request, 'engine/index.html', {'books': books, 'recommended_books': top_5_books, 'user': user})
 
 def bought(request, user_id):
@@ -351,14 +352,15 @@ def fn_calculation_for_each_book(request, user_id):
 
 def  select_top5_books(fn_score):
     
-    final_books_dict={}
+    final_books_dict=[]
     import operator 
     sorted_x = sorted(fn_score.items(), key=operator.itemgetter(1),reverse=True)
     sorted_x = sorted_x[:5]
     for i in sorted_x:
         temp={}
         book_name = Books.objects.filter(id=i[0]).values('id','name')
-        temp[str(book_name[0]['id'])] = {'book_name':str(book_name[0]['name']), 'score': i[1]}
-        final_books_dict.update(temp)
+        final_books_dict.append({'book_id':book_name[0]['id'],'book_name':str(book_name[0]['name']), 'score': i[1]})
     
+    final_books_dict.sort(lambda x,y : cmp(x['score'], y['score']), reverse=True)
     return final_books_dict
+
