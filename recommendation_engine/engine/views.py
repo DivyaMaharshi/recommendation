@@ -241,15 +241,16 @@ def product_click_score(request):
     sql_query = "select u1.user_id,u1.book_id,u1.clicks,is_bought from  user_click_history u1 left outer join user_bought_history u2 on u1.user_id = u2.user_id and u1.book_id = u2.book_id and is_bought != 't' "
     clicked_butnotbought = sql_dictfetchall(sql_query)
 
-    sql_query = " select book_id,sum(clicks) from user_click_history group by book_id order by book_id "
+    sql_query = "select user_id,sum(clicks) from user_click_history group by user_id order by user_id "
     productwise_totalclicks = sql_dictfetchall(sql_query)
-    productwise_totalclicks  = {str(i['book_id']):i['sum'] for i in productwise_totalclicks}
-
+    productwise_totalclicks = {str(i['user_id']):i['sum'] for i in productwise_totalclicks}
+    
+    
     for clicked_dict in clicked_butnotbought:
-        clicked_dict['normalised_clicks'] = round(clicked_dict['clicks']/productwise_totalclicks[str(clicked_dict['book_id'])],3)
+        clicked_dict['normalised_clicks'] = round(clicked_dict['clicks']/productwise_totalclicks[str(clicked_dict['user_id'])],3)
     
     for i in clicked_butnotbought:
-        if i['user_id'] not in product_clicks_dict.keys():
+        if str(i['user_id']) not in product_clicks_dict.keys():
             product_clicks_dict[str(i['user_id'])]={}
             product_clicks_dict[str(i['user_id'])][str(i['book_id'])]=i
 
@@ -258,7 +259,7 @@ def product_click_score(request):
             temp[str(i['book_id'])] = i
             product_clicks_dict[str(i['user_id'])].update(temp)
 
-    return product_clicks_dict
+    return product_clicks_dict 
 
 
 def fn_calculation_for_each_book(request, user_id):
@@ -272,6 +273,10 @@ def fn_calculation_for_each_book(request, user_id):
     # all books list
     books_list = Books.objects.values("id")
     books_list =  [i['id'] for i in books_list]
+
+    #books bought by that user_id
+    user_bought_books_list = UserBoughtHistory.objects.filter(user=user_id).values('book')
+    user_bought_books_list = [i['book'] for i in user_bought_books_list]
 
     for book_id in books_list:
         
@@ -288,7 +293,7 @@ def fn_calculation_for_each_book(request, user_id):
             else:
                 beta = 0
 
-            total = alpha + gamma + beta
+            total = round((alpha + gamma + beta),4)
             fn_score.update({str(book_id) :total})
 
         else :
@@ -330,27 +335,29 @@ def fn_calculation_for_each_book(request, user_id):
             else:
                 average_phi = 0
             
-            total = alpha + gamma + beta + average_phi
+            total = round((alpha + gamma + beta + average_phi), 4)
             fn_score.update({str(book_id) :total})
 
             
-    
+    # check recommended books should not be in consideration 
+    for i in user_bought_books_list :
+    	if str(i) in fn_score.keys():
+    	    fn_score.pop(str(i))
+
     final_fn_score_withbooks_names = select_top5_books(fn_score)
     return fn_score,final_fn_score_withbooks_names
 
 
 def  select_top5_books(fn_score):
     
-
     final_books_dict={}
     import operator 
     sorted_x = sorted(fn_score.items(), key=operator.itemgetter(1),reverse=True)
-    sorted_x = sorted_x[:6]
+    sorted_x = sorted_x[:5]
     for i in sorted_x:
         temp={}
-        book_name = Books.objects.filter(id=i[0]).values('name')
-        book_name = book_name[0]['name']
-        temp[str(book_name)] = i[1]
+        book_name = Books.objects.filter(id=i[0]).values('id','name')
+        temp[str(book_name[0]['id'])] = {'book_name':str(book_name[0]['name']), 'score': i[1]}
         final_books_dict.update(temp)
     
     return final_books_dict
