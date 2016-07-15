@@ -1,6 +1,10 @@
 {% include "engine/show_user.html" %}
 
-<div>
+{% include "engine/sidebar.html" %}
+
+<div style="margin-top:10px;margin-left:70px;float:left;height:100px;width:600px;">
+	<h1>Please rate the purchased product.</h1><br/>
+	<h2>{{ book.name }}</h2>
 	<form method="post" action="/users/{{user.id}}/books/{{book.id}}/rating">
 	{% csrf_token %}
 		<select name="user_rating">

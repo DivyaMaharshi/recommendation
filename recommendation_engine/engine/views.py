@@ -109,7 +109,8 @@ def product_rating(request, user_id, book_id):
 	x.rating_count = x.rating_count + 1
 	x.save()
 	
-	return HttpResponse("You rated this book " + str(rating) + " star")
+	return render(request, 'engine/rated.html',{'user':user, 'rating':rating})
+	#return HttpResponse("You rated this book " + str(rating) + " star")
 
 
 def sql_dictfetchall(sql_query):
